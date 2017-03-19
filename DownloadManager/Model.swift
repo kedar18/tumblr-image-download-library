@@ -48,6 +48,7 @@ class Model
             {
                 do
                 {
+                    // response trimming operation to a valid json
                     let dataString = String(data: data, encoding: .ascii)
                     let fistIndex = dataString!.index(dataString!.startIndex, offsetBy: 22)
                     let stringForJson = dataString!.substring(from: fistIndex)
