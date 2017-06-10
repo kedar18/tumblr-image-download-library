@@ -16,52 +16,70 @@ extension UIImageView
     {
         self.image = UIImage(named: "placeholder")
         
-        let objectFile = DownloadManager.getCacheForFile(key: key) is NSNull ? nil : DownloadManager.getCacheForFile(key: key) as! UIImage
+        let objectFile = DownloadManager.getCacheForFile(key: key) is NSNull ? nil : DownloadManager.getCacheForFile(key: key) as? UIImage
         
         if objectFile != nil
         {
             let img = objectFile
             
             self.image = img
-        }else
-        {
+            return
+        }
         
-        DownloadManager.downloadFromUrl(stringUrl: imageurl, completion: {
-            url,response,error in
+        Model.getImageFromCacheDirectory(indexItem: key){
+            bol,localImageUrl in
             
-            guard error == nil
-                else
+            if bol
             {
-                print("Error Occurred \(error?.localizedDescription)")
-                return
-            }
-            
-            do
-            {
-                if let data = try? Data(contentsOf: url!)
-                {
+                DispatchQueue.main.async {
                     
-                    DispatchQueue.main.async {
-                        
-                        let img = UIImage(data: data)
-                        
-                        self.image = img!
-                       DownloadManager.storeCacheForFile(file: img!, key: String(key))
-                        
-                    }
+                    let img = UIImage(contentsOfFile: localImageUrl!.path)
+                    self.image = img!
+                    
                 }
+            }else
+            {
                 
-            }catch let error as Error{
-                
-                print("Error while extracting data from url \(error.localizedDescription)")
+                DownloadManager.downloadFromUrl(stringUrl: imageurl, completion: {
+                    url,response,error in
+                    
+                    guard error == nil
+                        else
+                    {
+                        print("Error Occurred \(error?.localizedDescription)")
+                        return
+                    }
+                    
+                    do
+                    {
+                        let data = try Data(contentsOf: url!)
+                        
+                        DispatchQueue.main.async {
+                            
+                            let img = UIImage(data: data)
+                            self.image = img!
+                            
+                            DownloadManager.storeCacheForFile(file: img!, key: String(key))
+                            
+                        }
+                        
+                        let name = key + imageurl.components(separatedBy: "/").last!
+                        
+                        Model.storeToCacheDirectory(filename: name,data: data)
+                        
+                    }catch let erro as NSError
+                    {
+                        print("error while fetching content of file",erro.localizedDescription)
+                    }
+                    
+                })
             }
-            
-        
-        })
         
         }
         
-       
+        
+    
+        
         
     }
     
