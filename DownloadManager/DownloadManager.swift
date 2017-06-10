@@ -13,14 +13,19 @@ class DownloadManager
 {
      static let session = URLSession.shared
      static let queue = DispatchQueue(label: "download_manager")
-    
+     static let sharedCache: NSCache = { () -> NSCache<AnyObject, AnyObject> in
+        let cache = NSCache<AnyObject, AnyObject>()
+        cache.countLimit = 100
+        cache.totalCostLimit = 10*1024*1024
+        return cache
+    }()
+   
     
     class func downloadFromUrl(stringUrl:String,completion: @escaping (URL?,URLResponse?,Error?) -> Void)
     {
         guard let url = URL(string: stringUrl) else{
             print("url failed to create")
             return}
-        
         
         queue.async {
             
@@ -30,22 +35,17 @@ class DownloadManager
     
     }
     
-    
     class func storeCacheForFile(file:AnyObject,key:String)
     {
-        //print(key)
-        Model.sharedCache.setObject(file, forKey: key as NSString)
-        
-        //print(objectCache)
+        sharedCache.setObject(file, forKey: key as AnyObject)
     }
     
     class func getCacheForFile(key:String) -> AnyObject
     {
-        //print(key)
-        //print(Model.sharedCache.object(forKey: key as AnyObject)  )
-        
-        return Model.sharedCache.object(forKey: key as NSString) as AnyObject
+        return sharedCache.object(forKey: key as NSString) as AnyObject
     }
-
     
+
+
+
 }

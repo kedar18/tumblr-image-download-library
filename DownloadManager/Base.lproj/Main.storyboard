@@ -22,7 +22,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="116" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ros-zC-dXD">
-                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <rect key="frame" x="0.0" y="50" width="600" height="550"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <label key="tableFooterView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pull Up To Load More" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7w8-z4-KJI">
                                     <rect key="frame" x="0.0" y="144" width="600" height="44"/>
@@ -37,7 +37,7 @@
                                         <rect key="frame" x="0.0" y="28" width="600" height="116"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nHA-hB-JKS" id="AfH-rL-D26">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="115.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="115"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SCQ-Dl-qQa">
@@ -63,13 +63,26 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="2g1-ow-YpW"/>
                                 </connections>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tpU-HQ-45i">
+                                <rect key="frame" x="515" y="20" width="80" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="DiS-Oa-hsS"/>
+                                    <constraint firstAttribute="width" constant="80" id="cCt-JO-Wce"/>
+                                </constraints>
+                                <state key="normal" title="ClearCache"/>
+                                <connections>
+                                    <action selector="clearcache:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pdr-B4-WcH"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="ros-zC-dXD" firstAttribute="top" secondItem="tpU-HQ-45i" secondAttribute="bottom" id="67L-PH-m8N"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ros-zC-dXD" secondAttribute="bottom" id="6PP-Of-nj6"/>
-                            <constraint firstItem="ros-zC-dXD" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="DcE-d2-E71"/>
+                            <constraint firstAttribute="trailing" secondItem="tpU-HQ-45i" secondAttribute="trailing" constant="5" id="ORo-xe-ZIU"/>
                             <constraint firstAttribute="trailing" secondItem="ros-zC-dXD" secondAttribute="trailing" id="c87-LZ-Sc9"/>
                             <constraint firstItem="ros-zC-dXD" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="dw0-fx-6aV"/>
+                            <constraint firstItem="tpU-HQ-45i" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="jDc-jE-mZM"/>
                         </constraints>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

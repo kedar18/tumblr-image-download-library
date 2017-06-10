@@ -12,17 +12,24 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var imageTableView: UITableView!
     
-    let placeHolderImage = UIImage(named: "placeholder")
-    var scrollcount = 0
+    fileprivate let placeHolderImage = UIImage(named: "placeholder")
+    fileprivate var scrollcount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         
-        //replace usrername with any tumblr username
+        //replace usrername with any tumblr username with lots of photos
+        // default username is flowersonly
+        
         
         Model.username = "flowersonly"
+        
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        
+        
+        print(documentsPath)
         
     }
     
@@ -39,23 +46,65 @@ class ViewController: UIViewController {
             Model.photoObject = objectArray!
             imageTableView.reloadData()
             
-        }else
+        }
+        else
         {
-            Model.fetchData(completion: {[unowned self] boolValue in
             
-                if boolValue == true
-                {
-                    DispatchQueue.main.sync{
-                        
-                        self.imageTableView.reloadData()
-                    }
-                    
-                }
+            Model.imagesContainsInCache{
+                bol in
                 
-            })
+                if bol
+                {
+                    self.imageTableView.reloadData()
+                }else
+                {
+                    Model.fetchImageData(completion: {boolValue in
+                        
+                        if boolValue == true
+                        {
+                            DispatchQueue.main.sync{
+                                
+                                self.imageTableView.reloadData()
+                            }
+                            
+                        }
+                        
+                    })
+                }
+            }
+            
+            
         }
         
     }
+    
+    @IBAction func clearcache(_ sender: UIButton) {
+        
+        Model.clearCache{
+                bol in
+            
+            if bol
+            {
+                DownloadManager.sharedCache.removeAllObjects()
+                Model.fetchImageData(completion: { boolValue in
+                    
+                    if boolValue == true
+                    {
+                        DispatchQueue.main.sync{
+                            
+                            self.imageTableView.reloadData()
+                        }
+                        
+                    }
+                    
+                })
+            }
+        
+        }
+        
+        
+    }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -87,7 +136,6 @@ extension ViewController:UITableViewDataSource,UITableViewDelegate
         
         cell.imgVw.photoWithPlaceHolder(imageurl: imageName, placeHolder: placeHolderImage!, key: String(indexPath.row))
         
-        
         return cell
     }
     
@@ -113,9 +161,9 @@ extension ViewController:UITableViewDataSource,UITableViewDelegate
     
     private func fetchMore()
     {
-        Model.num += 20
+        Model.numOfLoadPages += 1
         
-        Model.fetchData(completion: {[unowned self] boolValue in
+        Model.fetchImageData(completion: { boolValue in
             
             if boolValue == true
             {

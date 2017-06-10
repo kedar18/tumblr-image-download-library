@@ -7,32 +7,21 @@
 //
 
 import Foundation
-
+import UIKit
 
 class Model
 {
-    static var num = 20
+    static var numOfLoadPages = 20
     static var username = "flowersonly"
-    static let sharedCache: NSCache = { () -> NSCache<AnyObject, AnyObject> in 
-        let cache = NSCache<AnyObject, AnyObject>()
-        cache.countLimit = 100
-        cache.totalCostLimit = 10*1024*1024 // Max 10MB used.
-        return cache
-    }()
-    
-    
     static var photoObject:Array<String> = Array<String>()
+    static let localCacheURL =  FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+    static let fileManager = FileManager.default
     
     
-    
-    // this method only works for the tumblr public read json api
-    // replace username with http://(username).tumblr.com/api/read/json
-    //the response posts object should only have Type as photo
-    
-    class func fetchData(completion: @escaping (Bool)-> Void)
+    class func fetchImageData(completion: @escaping (Bool)-> Void)
     {
         
-        DownloadManager.downloadFromUrl(stringUrl: "http://\(username).tumblr.com/api/read/json?num=\(num)", completion: {
+        DownloadManager.downloadFromUrl(stringUrl: "http://\(username).tumblr.com/api/read/json?num=\(numOfLoadPages)", completion: {
             url,response,error in
             
             guard error == nil
@@ -48,6 +37,7 @@ class Model
             {
                 do
                 {
+                    // response trimming operation to a valid json
                     let dataString = String(data: data, encoding: .ascii)
                     let fistIndex = dataString!.index(dataString!.startIndex, offsetBy: 22)
                     let stringForJson = dataString!.substring(from: fistIndex)
@@ -67,6 +57,7 @@ class Model
                         let tempObject = object as! NSDictionary
                         if (tempObject.value(forKey: "photo-url-100") != nil)
                         {
+                            
                         photoObject.append(tempObject.value(forKey: "photo-url-100") as! String)
                         }
                     }
@@ -85,6 +76,116 @@ class Model
             }
         })
 
+    }
+    
+    
+    
+    class func clearCache(completion: (Bool)-> Void){
+        
+        do {
+            // Get the directory contents urls (including subfolders urls)
+            let directoryContents = try fileManager.contentsOfDirectory( at: localCacheURL, includingPropertiesForKeys: nil, options: [])
+            for file in directoryContents {
+                do {
+                    
+                    try fileManager.removeItem(at: file)
+                }
+                catch let error as NSError {
+                    print("something went wrong: \(error)")
+                }
+                
+            }
+            completion(true)
+            
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+        
+        completion(false)
+    }
+    
+    class func storeToCacheDirectory(filename:String,data:Data)
+    {
+        let cachePath = localCacheURL.appendingPathComponent("imagecache")
+        let imagePath = cachePath.appendingPathComponent(filename)
+        
+        if !FileManager.default.fileExists(atPath: cachePath.path)
+        {
+            do {
+                try FileManager.default.createDirectory(atPath: cachePath.path, withIntermediateDirectories: false, attributes: nil)
+            } catch let error as NSError {
+                print(error.localizedDescription);
+            }
+        }
+        
+        do
+        {
+            try  data.write(to: imagePath, options: .atomic)
+            
+        }catch let error as NSError
+        {
+            print("error in writting to cache directory",error)
+        }
+        
+    }
+    
+    class func getImageFromCacheDirectory(indexItem:String,completion: (Bool,URL?) -> Void)
+    {
+        let cachePath = localCacheURL.appendingPathComponent("imagecache")
+        
+        if fileManager.fileExists(atPath: cachePath.path)
+        {
+            do
+            {
+                let directory = try fileManager.contentsOfDirectory(atPath: cachePath.path)
+                
+                guard directory.count <= Int(indexItem)! else {
+                    completion(false,nil)
+                    return
+                }
+                
+                for imagefile in directory
+                {
+                    if imagefile.characters.first! == indexItem.characters.first!
+                    {
+                        let imagePath = cachePath.appendingPathComponent(imagefile)
+                        completion(true,imagePath)
+                    }
+                }
+                
+            }catch let error as NSError
+            {
+                print("error in getting image from directory",error.localizedDescription)
+            }
+            
+        }
+        
+        completion(false,nil)
+    }
+    
+    class func imagesContainsInCache(completion: (Bool)-> Void)
+    {
+       
+            let cachePath = localCacheURL.appendingPathComponent("imagecache")
+            
+            if fileManager.fileExists(atPath: cachePath.path)
+            {
+                do
+                {
+                    let directory = try fileManager.contentsOfDirectory(atPath: cachePath.path)
+                    
+                    if directory.count > 0
+                    {
+                         completion(true)
+                    }
+                    
+                }catch let err as NSError
+                {
+                    print("images not contain",err.localizedDescription)
+                }
+            }
+        
+        completion(false)
     }
     
 }
