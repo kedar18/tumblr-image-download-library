@@ -64,12 +64,12 @@
                                 </connections>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tpU-HQ-45i">
-                                <rect key="frame" x="515" y="20" width="80" height="30"/>
+                                <rect key="frame" x="475" y="20" width="120" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="DiS-Oa-hsS"/>
-                                    <constraint firstAttribute="width" constant="80" id="cCt-JO-Wce"/>
+                                    <constraint firstAttribute="width" constant="120" id="cCt-JO-Wce"/>
                                 </constraints>
-                                <state key="normal" title="ClearCache"/>
+                                <state key="normal" title="Clear stored data"/>
                                 <connections>
                                     <action selector="clearcache:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pdr-B4-WcH"/>
                                 </connections>
