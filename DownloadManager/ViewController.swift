@@ -19,9 +19,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        
         //replace usrername with any tumblr username with lots of photos
         // default username is flowersonly
+        // example https://highclasscars.tumblr.com/
+        // replace floweronly with highclasscars
         
         
         Model.username = "flowersonly"
@@ -86,6 +87,7 @@ class ViewController: UIViewController {
             if bol
             {
                 DownloadManager.sharedCache.removeAllObjects()
+                Model.photoObject = []
                 Model.fetchImageData(completion: { boolValue in
                     
                     if boolValue == true
@@ -104,6 +106,60 @@ class ViewController: UIViewController {
         
         
     }
+    
+    @IBAction func changeuser(_ sender: UIButton) {
+        
+        let alertcontroller = UIAlertController(title: "Tumblr Username", message: "Type Tumblr username with lots of photos, please wait a little for images to load after done click", preferredStyle: .alert)
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+        
+        let done = UIAlertAction(title: "Done", style: .default, handler: {
+            action in
+            
+            let username = alertcontroller.textFields?.first?.text ?? "flowersonly"
+            
+            Model.username = username
+            
+            Model.clearCache{
+                bol in
+                
+                if bol
+                {
+                    DownloadManager.sharedCache.removeAllObjects()
+                    Model.photoObject = []
+                    Model.fetchImageData(completion: { boolValue in
+                        
+                        if boolValue == true
+                        {
+                            DispatchQueue.main.sync{
+                                
+                                self.imageTableView.reloadData()
+                            }
+                            
+                        }
+                        
+                    })
+                }
+                
+            }
+
+        
+        })
+        
+        alertcontroller.addTextField(configurationHandler: {
+            texfld in
+            
+            texfld.placeholder = "type tumblr username"
+            
+        })
+        
+        alertcontroller.addAction(cancel)
+        alertcontroller.addAction(done)
+        
+        present(alertcontroller, animated: true, completion: nil)
+        
+    }
+    
     
 
     override func didReceiveMemoryWarning() {
@@ -178,4 +234,7 @@ extension ViewController:UITableViewDataSource,UITableViewDelegate
     }
     
 }
+
+
+
 

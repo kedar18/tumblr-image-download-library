@@ -63,7 +63,7 @@ extension UIImageView
                             
                         }
                         
-                        let name = key + imageurl.components(separatedBy: "/").last!
+                        let name = key + "-" + imageurl.components(separatedBy: "/").last!
                         
                         Model.storeToCacheDirectory(filename: name,data: data)
                         

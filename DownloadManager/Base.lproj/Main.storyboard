@@ -74,11 +74,24 @@
                                     <action selector="clearcache:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pdr-B4-WcH"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h8m-ak-TKd">
+                                <rect key="frame" x="5" y="20" width="150" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="75z-HH-27t"/>
+                                    <constraint firstAttribute="height" constant="30" id="b7f-2c-K2S"/>
+                                </constraints>
+                                <state key="normal" title="Change tumblr user"/>
+                                <connections>
+                                    <action selector="changeuser:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gKQ-jd-6Gp"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ros-zC-dXD" firstAttribute="top" secondItem="tpU-HQ-45i" secondAttribute="bottom" id="67L-PH-m8N"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ros-zC-dXD" secondAttribute="bottom" id="6PP-Of-nj6"/>
+                            <constraint firstItem="h8m-ak-TKd" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="HHJ-4n-D0j"/>
+                            <constraint firstItem="h8m-ak-TKd" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="5" id="Nrw-qt-1Ca"/>
                             <constraint firstAttribute="trailing" secondItem="tpU-HQ-45i" secondAttribute="trailing" constant="5" id="ORo-xe-ZIU"/>
                             <constraint firstAttribute="trailing" secondItem="ros-zC-dXD" secondAttribute="trailing" id="c87-LZ-Sc9"/>
                             <constraint firstItem="ros-zC-dXD" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="dw0-fx-6aV"/>

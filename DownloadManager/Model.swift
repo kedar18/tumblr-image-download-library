@@ -12,7 +12,7 @@ import UIKit
 class Model
 {
     static var numOfLoadPages = 20
-    static var username = "flowersonly"
+    static var username = ""
     static var photoObject:Array<String> = Array<String>()
     static let localCacheURL =  FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
     static let fileManager = FileManager.default
@@ -58,7 +58,7 @@ class Model
                         if (tempObject.value(forKey: "photo-url-100") != nil)
                         {
                             
-                        photoObject.append(tempObject.value(forKey: "photo-url-100") as! String)
+                            photoObject.append(tempObject.value(forKey: "photo-url-100") as! String)
                         }
                     }
                     
@@ -139,14 +139,10 @@ class Model
             {
                 let directory = try fileManager.contentsOfDirectory(atPath: cachePath.path)
                 
-                guard directory.count <= Int(indexItem)! else {
-                    completion(false,nil)
-                    return
-                }
-                
                 for imagefile in directory
                 {
-                    if imagefile.characters.first! == indexItem.characters.first!
+                    
+                    if imagefile.components(separatedBy: "-").first! == indexItem
                     {
                         let imagePath = cachePath.appendingPathComponent(imagefile)
                         completion(true,imagePath)
@@ -165,27 +161,28 @@ class Model
     
     class func imagesContainsInCache(completion: (Bool)-> Void)
     {
-       
-            let cachePath = localCacheURL.appendingPathComponent("imagecache")
-            
-            if fileManager.fileExists(atPath: cachePath.path)
+        let cachePath = localCacheURL.appendingPathComponent("imagecache")
+        
+        if fileManager.fileExists(atPath: cachePath.path)
+        {
+            do
             {
-                do
+                let directory = try fileManager.contentsOfDirectory(atPath: cachePath.path)
+                
+                if directory.count > 0
                 {
-                    let directory = try fileManager.contentsOfDirectory(atPath: cachePath.path)
-                    
-                    if directory.count > 0
-                    {
-                         completion(true)
-                    }
-                    
-                }catch let err as NSError
-                {
-                    print("images not contain",err.localizedDescription)
+                     completion(true)
                 }
+                
+            }catch let err as NSError
+            {
+                print("images not contain",err.localizedDescription)
             }
+        }
         
         completion(false)
     }
     
 }
+
+
