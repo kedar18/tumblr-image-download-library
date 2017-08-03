@@ -9,8 +9,9 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet weak var imageTableView: UITableView!
+    var refreshControl = UIRefreshControl()
     
     fileprivate let placeHolderImage = UIImage(named: "placeholder")
     fileprivate var scrollcount = 0
@@ -19,18 +20,21 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        //replace usrername with any tumblr username with lots of photos
+        refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refresh(sender:)), for: UIControlEvents.valueChanged)
+        imageTableView.addSubview(refreshControl)
+        
+        // replace usrername with any tumblr username with lots of photos
         // default username is flowersonly
         // example https://highclasscars.tumblr.com/
-        // replace floweronly with highclasscars
+        // example replace highclasscars with floweronly
         
         
-        Model.username = "flowersonly"
+        Model.username = "highclasscars"
         
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        
-        
-        print(documentsPath)
+        let cachePath = Model.localCacheURL.appendingPathComponent("imagecache")
+        print(cachePath)
         
     }
     
@@ -59,18 +63,7 @@ class ViewController: UIViewController {
                     self.imageTableView.reloadData()
                 }else
                 {
-                    Model.fetchImageData(completion: {boolValue in
-                        
-                        if boolValue == true
-                        {
-                            DispatchQueue.main.sync{
-                                
-                                self.imageTableView.reloadData()
-                            }
-                            
-                        }
-                        
-                    })
+                    fetchImageData()
                 }
             }
             
@@ -79,29 +72,54 @@ class ViewController: UIViewController {
         
     }
     
+    func fetchImageData()
+    {
+        guard Reachability().isInternetAvailable() else
+        {
+            showAlert(message: "Internet not available")
+            return
+        }
+        Model.fetchImageData(completion: {  boolValue in
+            
+            if boolValue == true
+            {
+                DispatchQueue.main.sync{
+                    
+                    self.imageTableView.reloadData()
+                    self.refreshControl.endRefreshing()
+                }
+                
+            }else
+            {
+                DispatchQueue.main.sync{
+                self.refreshControl.endRefreshing()
+                }
+                print("Something went wrong")
+            }
+            
+            
+            
+        })
+    }
+    
+    func refresh(sender:AnyObject) {
+        
+        fetchImageData()
+    }
+    
     @IBAction func clearcache(_ sender: UIButton) {
         
         Model.clearCache{
-                bol in
+            bol in
             
             if bol
             {
                 DownloadManager.sharedCache.removeAllObjects()
                 Model.photoObject = []
-                Model.fetchImageData(completion: { boolValue in
-                    
-                    if boolValue == true
-                    {
-                        DispatchQueue.main.sync{
-                            
-                            self.imageTableView.reloadData()
-                        }
-                        
-                    }
-                    
-                })
+                
+                fetchImageData()
             }
-        
+            
         }
         
         
@@ -127,23 +145,12 @@ class ViewController: UIViewController {
                 {
                     DownloadManager.sharedCache.removeAllObjects()
                     Model.photoObject = []
-                    Model.fetchImageData(completion: { boolValue in
-                        
-                        if boolValue == true
-                        {
-                            DispatchQueue.main.sync{
-                                
-                                self.imageTableView.reloadData()
-                            }
-                            
-                        }
-                        
-                    })
+                    
+                    self.fetchImageData()
                 }
                 
             }
-
-        
+            
         })
         
         alertcontroller.addTextField(configurationHandler: {
@@ -161,13 +168,13 @@ class ViewController: UIViewController {
     }
     
     
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    
 }
 
 extension ViewController:UITableViewDataSource,UITableViewDelegate
@@ -190,7 +197,7 @@ extension ViewController:UITableViewDataSource,UITableViewDelegate
         
         let imageName = Model.photoObject[indexPath.row]
         
-        cell.imgVw.photoWithPlaceHolder(imageurl: imageName, placeHolder: placeHolderImage!, key: String(indexPath.row))
+        cell.imgVw.photoWith(imageUrl: imageName, andPlaceHolder: placeHolderImage!, key: String(indexPath.row))
         
         return cell
     }
@@ -219,18 +226,7 @@ extension ViewController:UITableViewDataSource,UITableViewDelegate
     {
         Model.numOfLoadPages += 1
         
-        Model.fetchImageData(completion: { boolValue in
-            
-            if boolValue == true
-            {
-                DispatchQueue.main.sync{
-                    
-                    self.imageTableView.reloadData()
-                }
-                
-            }
-            
-        })
+        fetchImageData()
     }
     
 }

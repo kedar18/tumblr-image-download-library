@@ -11,8 +11,7 @@ import UIKit
 
 extension UIImageView
 {
-    
-    func photoWithPlaceHolder(imageurl:String,placeHolder:UIImage,key:String)
+    func photoWith(imageUrl:String,andPlaceHolder:UIImage,key:String)
     {
         self.image = UIImage(named: "placeholder")
         
@@ -39,14 +38,19 @@ extension UIImageView
                 }
             }else
             {
+                guard Reachability().isInternetAvailable() else
+                {
+                    print("Internet not available")
+                    return
+                }
                 
-                DownloadManager.downloadFromUrl(stringUrl: imageurl, completion: {
+                DownloadManager.downloadFrom(stringUrl: imageUrl, completion: {
                     url,response,error in
                     
                     guard error == nil
                         else
                     {
-                        print("Error Occurred \(error?.localizedDescription)")
+                        print("Error Occurred \(error!.localizedDescription)")
                         return
                     }
                     
@@ -59,13 +63,12 @@ extension UIImageView
                             let img = UIImage(data: data)
                             self.image = img!
                             
-                            DownloadManager.storeCacheForFile(file: img!, key: String(key))
+                            let cost = self.costFor(image: img!)
                             
+                            DownloadManager.storeCache(forFile: img!,cost: cost, key: String(key))
+                            let name = key + "-" + imageUrl.components(separatedBy: "/").last!
+                            Model.storeToCacheDirectory(filename: name,data: data)
                         }
-                        
-                        let name = key + "-" + imageurl.components(separatedBy: "/").last!
-                        
-                        Model.storeToCacheDirectory(filename: name,data: data)
                         
                     }catch let erro as NSError
                     {
@@ -74,13 +77,32 @@ extension UIImageView
                     
                 })
             }
-        
+            
         }
-        
-        
-    
         
         
     }
     
+    func costFor(image: UIImage) -> Int {
+        let imageRef = image.cgImage
+        return imageRef!.bytesPerRow * imageRef!.height
+    }
+    
+}
+
+extension UIViewController
+{
+    
+    internal func showAlert(message:String)
+    {
+        showAlert(message: message, title: "")
+    }
+    
+    internal func showAlert(message: String, title: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
 }

@@ -9,19 +9,18 @@
 import Foundation
 import UIKit
 
-class DownloadManager
+open class DownloadManager
 {
-     static let session = URLSession.shared
-     static let queue = DispatchQueue(label: "download_manager")
-     static let sharedCache: NSCache = { () -> NSCache<AnyObject, AnyObject> in
+    fileprivate static let session = URLSession.shared
+    fileprivate static let queue = DispatchQueue(label: "download_manager")
+    static let sharedCache: NSCache = { () -> NSCache<AnyObject, AnyObject> in
         let cache = NSCache<AnyObject, AnyObject>()
-        cache.countLimit = 100
-        cache.totalCostLimit = 10*1024*1024
+        cache.totalCostLimit = 60*1024*1024 // 60mb
         return cache
     }()
-   
     
-    class func downloadFromUrl(stringUrl:String,completion: @escaping (URL?,URLResponse?,Error?) -> Void)
+    
+    open class func downloadFrom(stringUrl:String,completion: @escaping (URL?,URLResponse?,Error?) -> Void)
     {
         guard let url = URL(string: stringUrl) else{
             print("url failed to create")
@@ -32,20 +31,20 @@ class DownloadManager
             let downloadTask = session.downloadTask(with: url, completionHandler: completion)
             downloadTask.resume()
         }
-    
+        
     }
     
-    class func storeCacheForFile(file:AnyObject,key:String)
+    open class func storeCache(forFile:AnyObject,cost:Int,key:String)
     {
-        sharedCache.setObject(file, forKey: key as AnyObject)
+        sharedCache.setObject(forFile, forKey: key as AnyObject, cost: cost)
     }
     
-    class func getCacheForFile(key:String) -> AnyObject
+    open class func getCacheForFile(key:String) -> AnyObject
     {
         return sharedCache.object(forKey: key as NSString) as AnyObject
     }
     
-
-
-
+    
+    
+    
 }

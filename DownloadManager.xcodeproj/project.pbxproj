@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		971068981F3382B800D84839 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971068971F3382B800D84839 /* Utility.swift */; };
 		976631AB1E29EBB000928428 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976631AA1E29EBB000928428 /* AppDelegate.swift */; };
 		976631AD1E29EBB000928428 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976631AC1E29EBB000928428 /* ViewController.swift */; };
 		976631B01E29EBB000928428 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 976631AE1E29EBB000928428 /* Main.storyboard */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		971068971F3382B800D84839 /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		976631A71E29EBB000928428 /* DownloadManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DownloadManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		976631AA1E29EBB000928428 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		976631AC1E29EBB000928428 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				976631DA1E2A4E5200928428 /* Extension.swift */,
 				976631DE1E2A628500928428 /* Cell.swift */,
 				976635F41E2B754700BD7F2A /* Model.swift */,
+				971068971F3382B800D84839 /* Utility.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -283,6 +286,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				971068981F3382B800D84839 /* Utility.swift in Sources */,
 				976631AD1E29EBB000928428 /* ViewController.swift in Sources */,
 				976631D91E2A456900928428 /* DownloadManager.swift in Sources */,
 				976631DF1E2A628500928428 /* Cell.swift in Sources */,

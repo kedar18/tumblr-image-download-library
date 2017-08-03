@@ -21,13 +21,13 @@ class Model
     class func fetchImageData(completion: @escaping (Bool)-> Void)
     {
         
-        DownloadManager.downloadFromUrl(stringUrl: "http://\(username).tumblr.com/api/read/json?num=\(numOfLoadPages)", completion: {
+        DownloadManager.downloadFrom(stringUrl: "http://\(username).tumblr.com/api/read/json?num=\(numOfLoadPages)", completion: {
             url,response,error in
             
             guard error == nil
                 else
             {
-                print("Error Occurred \(error?.localizedDescription)")
+                print("Error Occurred \(error!.localizedDescription)")
                 return
             }
             
@@ -64,7 +64,7 @@ class Model
                     
                     completion(true)
                     
-                    DownloadManager.storeCacheForFile(file: photoObject as AnyObject, key: "response")
+                    DownloadManager.storeCache(forFile: photoObject as AnyObject, cost: photoObject.capacity, key: "response")
                     
                     
                 }catch let error
@@ -75,7 +75,7 @@ class Model
                 
             }
         })
-
+        
     }
     
     
@@ -171,7 +171,7 @@ class Model
                 
                 if directory.count > 0
                 {
-                     completion(true)
+                    completion(true)
                 }
                 
             }catch let err as NSError
