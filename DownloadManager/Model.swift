@@ -15,7 +15,7 @@ class Model
     static var username = ""
     static var photoObject:Array<String> = Array<String>()
     static let localCacheURL =  FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-    static let fileManager = FileManager.default
+    fileprivate static let fileManager = FileManager.default
     
     
     class func fetchImageData(completion: @escaping (Bool)-> Void)
@@ -171,6 +171,7 @@ class Model
                 
                 if directory.count > 0
                 {
+                    Model.photoObject = directory
                     completion(true)
                 }
                 

@@ -44,7 +44,4 @@ open class DownloadManager
         return sharedCache.object(forKey: key as NSString) as AnyObject
     }
     
-    
-    
-    
 }

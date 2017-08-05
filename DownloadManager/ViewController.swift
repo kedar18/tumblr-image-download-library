@@ -47,10 +47,8 @@ class ViewController: UIViewController {
         
         if objectArray != nil
         {
-            
             Model.photoObject = objectArray!
             imageTableView.reloadData()
-            
         }
         else
         {
@@ -67,45 +65,10 @@ class ViewController: UIViewController {
                 }
             }
             
-            
         }
         
     }
     
-    func fetchImageData()
-    {
-        guard Reachability().isInternetAvailable() else
-        {
-            showAlert(message: "Internet not available")
-            return
-        }
-        Model.fetchImageData(completion: {  boolValue in
-            
-            if boolValue == true
-            {
-                DispatchQueue.main.sync{
-                    
-                    self.imageTableView.reloadData()
-                    self.refreshControl.endRefreshing()
-                }
-                
-            }else
-            {
-                DispatchQueue.main.sync{
-                self.refreshControl.endRefreshing()
-                }
-                print("Something went wrong")
-            }
-            
-            
-            
-        })
-    }
-    
-    func refresh(sender:AnyObject) {
-        
-        fetchImageData()
-    }
     
     @IBAction func clearcache(_ sender: UIButton) {
         
@@ -224,11 +187,50 @@ extension ViewController:UITableViewDataSource,UITableViewDelegate
     
     private func fetchMore()
     {
-        Model.numOfLoadPages += 1
+        Model.numOfLoadPages += 10
         
         fetchImageData()
     }
     
+}
+
+
+extension ViewController
+{
+    func fetchImageData()
+    {
+        guard Reachability().isInternetAvailable() else
+        {
+            refreshControl.endRefreshing()
+            showAlert(message: "Internet not available")
+            return
+        }
+        Model.fetchImageData(completion: {  boolValue in
+            
+            if boolValue == true
+            {
+                DispatchQueue.main.sync{
+                    
+                    self.imageTableView.reloadData()
+                    self.refreshControl.endRefreshing()
+                }
+                
+            }else
+            {
+                DispatchQueue.main.sync{
+                    self.refreshControl.endRefreshing()
+                }
+                print("Something went wrong")
+            }
+            
+        })
+    }
+    
+    func refresh(sender:AnyObject) {
+        
+        fetchImageData()
+    }
+
 }
 
 
